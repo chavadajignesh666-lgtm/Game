@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fashion Interaction Game</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #171717;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+header {
+  padding: 16px;
+  background: #252525;
+}
+
+h2 {
+  margin: 0;
+  color: #f6d58a;
+}
+
+#game {
+  width: 100%;
+  max-width: 440px;
+  margin: auto;
+  padding: 12px;
+}
+
+#scene {
+  position: relative;
+  height: 540px;
+  max-height: 68vh;
+  min-height: 380px;
+  background: linear-gradient(#c4d8df, #e8c6b2);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#model {
+  height: 96%;
+  max-width: 100%;
+  object-fit: contain;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: transform .3s, filter .3s;
+}
+
+#model:active {
+  transform: scale(.98);
+}
+
+#message {
+  min-height: 54px;
+  padding: 14px 4px;
+  color: #ffe0a0;
+  line-height: 1.5;
+}
+
+#stage {
+  color: #fff;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+button {
+  min-height: 46px;
+  padding: 12px 17px;
+  border: 0;
+  border-radius: 9px;
+  background: #f3ce72;
+  color: #231b0b;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:focus-visible {
+  outline: 3px solid white;
+  outline-offset: 3px;
+}
+
+#reset {
+  background: #ddd;
+}
+
+footer {
+  padding: 14px;
+  color: #aaa;
+  font-size: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #model {
+    transition: none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>Fashion Interaction</h2>
+  <p>Photo Model Edition</p>
+</header>
+
+<main id="game">
+
+  <div id="stage">Stage 1 / 4</div>
+
+  <div id="scene">
+    <img
+      id="model"
+      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=85"
+      alt="Adult fashion model"
+      referrerpolicy="no-referrer"
+    >
+  </div>
+
+  <div id="message" aria-live="polite">
+    मॉडल पर टैप करो या नीचे Interact बटन दबाओ!
+  </div>
+
+  <div class="controls">
+    <button id="interact" type="button">Interact</button>
+    <button id="next" type="button">Next Stage →</button>
+    <button id="reset" type="button">Restart ↻</button>
+  </div>
+
+</main>
+
+<footer>
+  Photo-based browser game • Android & PC
+</footer>
+
+<script>
+const model = document.getElementById("model");
+const message = document.getElementById("message");
+const stageLabel = document.getElementById("stage");
+
+let stage = 0;
+
+const stages = [
+  {
+    title: "Stage 1 / 4",
+    message: "स्वागत है! मॉडल के साथ इंटरैक्ट करो।",
+    filter: "none",
+    scale: 1
+  },
+  {
+    title: "Stage 2 / 4",
+    message: "स्टेज 2: नया फोटो इफेक्ट अनलॉक हुआ!",
+    filter: "saturate(1.15)",
+    scale: 1.02
+  },
+  {
+    title: "Stage 3 / 4",
+    message: "स्टेज 3: फैशन फोटो का नया लुक!",
+    filter: "contrast(1.08) brightness(1.04)",
+    scale: 1.04
+  },
+  {
+    title: "Stage 4 / 4",
+    message: "बधाई हो! तुमने सभी डेमो स्टेज पूरे कर लिए।",
+    filter: "saturate(1.25) contrast(1.05)",
+    scale: 1.02
+  }
+];
+
+function showStage() {
+  const current = stages[stage];
+
+  stageLabel.textContent = current.title;
+  message.textContent = current.message;
+  model.style.filter = current.filter;
+  model.style.transform = `scale(${current.scale})`;
+}
+
+function interact() {
+  stage = (stage + 1) % stages.length;
+  showStage();
+}
+
+function nextStage() {
+  stage = (stage + 1) % stages.length;
+  showStage();
+}
+
+function restart() {
+  stage = 0;
+  showStage();
+}
+
+model.addEventListener("click", interact);
+
+document.getElementById("interact")
+  .addEventListener("click", interact);
+
+document.getElementById("next")
+  .addEventListener("click", nextStage);
+
+document.getElementById("reset")
+  .addEventListener("click", restart);
+
+model.addEventListener("error", () => {
+  message.textContent =
+    "फोटो लोड नहीं हुई। इंटरनेट कनेक्शन जाँचकर पेज दोबारा खोलें।";
+});
+
+showStage();
+</script>
+
+</body>
+</html>
